@@ -42,7 +42,7 @@ with open("decision_62.txt", "r", encoding="utf-8") as f:
     decision_text = f.read()
 
 # ========== إعداد البوت ==========
-openai.api_key = st.secrets["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"]
+openai.api_key = st.secrets["OPENAI_API_KEY"]
 
 system_prompt = f"""
 You are Ask Union AI, an Arabic-speaking educational assistant created by the Student Union of مدرسة منير الجمال الرسمية للغات.
@@ -82,4 +82,5 @@ for msg in st.session_state["messages"]:
         st.markdown(f'<div class="chat-bubble user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="chat-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+
 
