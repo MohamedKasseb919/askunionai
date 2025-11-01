@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 
 # ========== إعدادات الصفحة ==========
 st.set_page_config(page_title="Ask Union AI 🤖", page_icon="🤖", layout="wide")
@@ -41,9 +41,10 @@ st.markdown("""
 with open("decision_62.txt", "r", encoding="utf-8") as f:
     decision_text = f.read()
 
-# ========== إعداد البوت ==========
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# ========== إعداد مفتاح OpenAI ==========
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
+# ========== إعداد البوت ==========
 system_prompt = f"""
 You are Ask Union AI, an Arabic-speaking educational assistant created by the Student Union of مدرسة منير الجمال الرسمية للغات.
 Answer only questions related to student unions, elections, activities, the yearly theme “تشكيل الوعي لعالم متغير”, or the ministerial decision 62 for 2013.
@@ -66,22 +67,14 @@ if st.button("إرسال"):
     if user_input:
         st.session_state["messages"].append({"role": "user", "content": user_input})
         with st.spinner("جاري التفكير... 🤔"):
-            from openai import OpenAI
-client = OpenAI(api_key=openai.api_key)
-
-response = client.chat.completions.create(
-    model="gpt-3.5-turbo",
-    messages=[
-        {"role": "system", "content": system_prompt},
-        *st.session_state["messages"]
-    ]
-)
-
-reply = response.choices[0].message.content
-
+            response = client.chat.completions.create(
+                model="gpt-3.5-turbo",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    *st.session_state["messages"]
                 ]
             )
-            reply = completion.choices[0].message["content"]
+            reply = response.choices[0].message.content
             st.session_state["messages"].append({"role": "assistant", "content": reply})
 
 # عرض المحادثة
@@ -90,6 +83,3 @@ for msg in st.session_state["messages"]:
         st.markdown(f'<div class="chat-bubble user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="chat-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
-
-
-
