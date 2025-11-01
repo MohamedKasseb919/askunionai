@@ -1,9 +1,0 @@
-fastapi
-uvicorn[standard]
-openai
-faiss-cpu
-python-multipart
-pydantic
-python-dotenv
-tqdm
-numpy
