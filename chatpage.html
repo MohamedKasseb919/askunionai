@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Ask Union AI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <style>
+    body{font-family:Arial;background:#1c1032;color:#fff;padding:20px;}
+    #chat{max-width:720px;margin:0 auto;}
+    .msg{padding:10px;border-radius:8px;margin:8px 0;}
+    .user{background:#32214a;text-align:right;}
+    .bot{background:#482a70;}
+    input{width:70%;padding:8px;border-radius:8px;border:none}
+    button{background:#7A3FFF;color:#fff;border:none;padding:10px 16px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div id="chat">
+    <h2>Ask Union AI 🤖</h2>
+    <div id="conv"></div>
+    <div>
+      <input id="q" placeholder="اكتب سؤالك هنا..." />
+      <button onclick="ask()">اسأل</button>
+    </div>
+  </div>
+
+  <script>
+    async function ask(){
+      const q = document.getElementById('q').value;
+      if(!q) return;
+      const conv = document.getElementById('conv');
+      const udiv = document.createElement('div'); udiv.className='msg user'; udiv.innerText=q; conv.appendChild(udiv);
+      document.getElementById('q').value='';
+      const res = await fetch('/chat', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({question:q})
+      });
+      const data = await res.json();
+      const bdiv = document.createElement('div'); bdiv.className='msg bot'; bdiv.innerText = data.answer;
+      conv.appendChild(bdiv);
+      conv.scrollTop = conv.scrollHeight;
+    }
+  </script>
+</body>
+</html>
