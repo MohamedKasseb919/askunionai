@@ -66,11 +66,19 @@ if st.button("إرسال"):
     if user_input:
         st.session_state["messages"].append({"role": "user", "content": user_input})
         with st.spinner("جاري التفكير... 🤔"):
-            completion = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
-                messages=[
-                    {"role": "system", "content": system_prompt},
-                    *st.session_state["messages"]
+            from openai import OpenAI
+client = OpenAI(api_key=openai.api_key)
+
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "system", "content": system_prompt},
+        *st.session_state["messages"]
+    ]
+)
+
+reply = response.choices[0].message.content
+
                 ]
             )
             reply = completion.choices[0].message["content"]
@@ -82,5 +90,6 @@ for msg in st.session_state["messages"]:
         st.markdown(f'<div class="chat-bubble user-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="chat-bubble">{msg["content"]}</div>', unsafe_allow_html=True)
+
 
 
